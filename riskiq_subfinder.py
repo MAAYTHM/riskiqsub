@@ -36,6 +36,7 @@ def loader(
     constant_string="",
     temp_string="",
     final_string="",
+    rm_final_string="",
     loop_condition="",
     break_condition="",
     reset_condition="",
@@ -74,13 +75,21 @@ def loader(
             if break_condition and eval(break_condition):
                 break
 
+        # for removing any above remaining line
+        flushPrint(" " * (len(constant_string) + 5), end="\r")
+
         # print final words
         if final_string and not final_string.isspace():
-            flushPrint(final_string, end="\r")
+            flushPrint(eval(final_string), end="\r")
             time.sleep(time_gap)
 
-        # for removing any above remaining line
-        flushPrint(" " * (len(constant_string) + 10), end="\r")
+        # remove final string
+        if rm_final_string:
+            flushPrint(" " * (len(final_string) + 5), end="\r")
+
+        # to save final string print
+        else:
+            print()
 
 
 def help_():
@@ -157,7 +166,7 @@ d8888b. d888888b .d8888. db   dD d888888b  .d88b.  .d8888. db    db d8888b.
     )
 
 
-def error(errorMsg):
+def error(errorMsg=""):
     """
     Print error messages.
     """
@@ -167,7 +176,7 @@ def error(errorMsg):
     if verbose:
         print(traceback.format_exc())
 
-    else:
+    elif errorMsg and not str(errorMsg).isspace():
         print()
         print(colored(f"[-] Error, {errorMsg} !!!", "red"))
 
@@ -199,39 +208,46 @@ def verify_creds():
     """
     for checking if user given email and pass for riskiq website and these creds are right or not
     """
-    global conf_file, rq_session, user_agents, stop_threads, timeout
+    global conf_file, rq_session, user_agents, stop_threads, timeout, dispose_string
 
-    thread = Thread(
-        target=loader,
-        kwargs={
-            "constant_string": "Verifying Credentials",
-            "temp_string": "'.' * index",
-            "final_string": "[+] Credentials Verified",
-            "loop_condition": "not stop_threads",
-            "reset_condition": "(index - 1) == max_index",
-            "max_index": 3,
-            "time_gap": 0.3,
-        },
-    ).start()
+    try:
+        thread = Thread(
+            target=loader,
+            kwargs={
+                "constant_string": "Verifying Credentials",
+                "temp_string": "'.' * index",
+                "final_string": "dispose_string",
+                "rm_final_string": "",
+                "loop_condition": "not stop_threads",
+                "reset_condition": "(index - 1) == max_index",
+                "max_index": 3,
+                "time_gap": 0.3,
+            },
+        ).start()
 
-    u_email = json.load(open(conf_file, "r"))["email"]
-    u_pass = json.load(open(conf_file, "r"))["pass"]
-    data = {"username": u_email, "password": u_pass, "twoFactorAnswer": None}
-    login_url = "https://community.riskiq.com/api/account/login"
+        u_email = json.load(open(conf_file, "r"))["email"]
+        u_pass = json.load(open(conf_file, "r"))["pass"]
+        data = {"username": u_email, "password": u_pass, "twoFactorAnswer": None}
+        login_url = "https://community.riskiq.com/api/account/login"
+        dispose_string = "[+] Credentials Verified"
 
-    # response from riskiq server for login
-    resp = rq_session.post(
-        login_url,
-        data=data,
-        headers={"User-Agent": random.choice(user_agents)},
-        timeout=timeout,
-    )
+        # response from riskiq server for login
+        resp = rq_session.post(
+            login_url,
+            data=data,
+            headers={"User-Agent": random.choice(user_agents)},
+            timeout=timeout,
+        )
 
-    stop_threads = True  # to finish the work of prev thread
-    time.sleep(0.5)  # wait untill prev thread finishes
-    # if credentials are wrong
-    if not resp.status_code == 200 and not resp.json()["success"]:
-        error(errorMsg="Wrong credentials for riskiq")
+        # if credentials are wrong
+        if not resp.status_code == 200 or not resp.json()["success"]:
+            dispose_string = "[-] Credentials not valid"
+            return False
+
+        return True
+
+    except:
+        error(errorMsg="Invalid credentials for riskiq")
 
 
 def main():
@@ -290,6 +306,7 @@ if __name__ == "__main__":
         Author = "MAAYTHM"
         GithubUrl = "https://github.com/MAAYTHM/"
         fileName = sys.argv[0].split("/")[-1].split("\\")[-1]
+        dispose_string = ""  # disposable variable just to use to transfer one value to another function
         verbose = False
         silent = False  # for suppressing banner print
         conf_file = "riskiq_subfinder.json"
@@ -398,9 +415,18 @@ if __name__ == "__main__":
 
             if not silent:
                 print_banner()
+
             # for checking if user given email and pass for riskiq website and these creds are right or not
-            verify_creds()
-            main()
+            verified = verify_creds()
+            stop_threads = True  # to finish the work of prev thread
+            time.sleep(0.5)  # wait untill prev thread finishes
+
+            # if user creds verified, then run main function
+            if verified:
+                print(
+                    " " * (len(dispose_string) + 5), end="\r"
+                )  # to remove '[+] Credentials Verified' string
+                main()
 
         # session close
         rq_session.close()
