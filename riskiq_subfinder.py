@@ -198,12 +198,13 @@ def pipeInput():
         domains.extend([domain])
 
 
-def fileInput():
+def fileInput(name):
     """
     Extracting domains from file
     """
+    global domains
 
-    with open(Input_filename, "r") as f:
+    with open(name, "r") as f:
         domains = f.read().splitlines()
     domains = list(set(domains))
 
@@ -373,7 +374,7 @@ if __name__ == "__main__":
                     )
 
                 else:
-                    raise  # -> Config File not exists
+                    raise ("Config File not exists")  # -> Config File not exists
 
             except:
                 error(errorMsg=f"Invalid/Empty configuration file")
@@ -401,7 +402,7 @@ if __name__ == "__main__":
 
                     # checking if file exists?
                     if not os.path.isfile(Input_filename):
-                        raise  # ->  Input File not exists
+                        raise ("Input File not exists")  # ->  Input File not exists
 
                     # extracting urls from file
                     fileInput(Input_filename)
