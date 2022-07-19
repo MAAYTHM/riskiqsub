@@ -36,7 +36,6 @@ def loader(
     constant_string="",
     temp_string="",
     final_string="",
-    rm_final_string="",
     loop_condition="",
     break_condition="",
     reset_condition="",
@@ -83,13 +82,18 @@ def loader(
             flushPrint(eval(final_string), end="\r")
             time.sleep(time_gap)
 
-        # remove final string
-        if rm_final_string:
-            flushPrint(" " * (len(final_string) + 5), end="\r")
 
-        # to save final string print
-        else:
-            print()
+def wait_till():
+    """
+    Wait for prev threads to finish
+    """
+    global threads
+
+    while True in [t.is_alive() for t in threads]:
+        pass
+
+    # clearing threads list after this
+    threads.clear()
 
 
 def help_():
@@ -208,7 +212,7 @@ def verify_creds():
     """
     for checking if user given email and pass for riskiq website and these creds are right or not
     """
-    global conf_file, rq_session, user_agents, stop_threads, timeout, dispose_string
+    global conf_file, rq_session, user_agents, stop_threads, timeout, dispose_string, threads
 
     try:
         thread = Thread(
@@ -217,13 +221,14 @@ def verify_creds():
                 "constant_string": "Verifying Credentials",
                 "temp_string": "'.' * index",
                 "final_string": "dispose_string",
-                "rm_final_string": "",
                 "loop_condition": "not stop_threads",
                 "reset_condition": "(index - 1) == max_index",
                 "max_index": 3,
                 "time_gap": 0.3,
             },
-        ).start()
+        )
+        threads.append(thread)
+        thread.start()
 
         u_email = json.load(open(conf_file, "r"))["email"]
         u_pass = json.load(open(conf_file, "r"))["pass"]
@@ -312,6 +317,7 @@ if __name__ == "__main__":
         conf_file = "riskiq_subfinder.json"
         rq_session = Session()
         domains = []
+        threads = []  # contain threads
         stop_threads = False  # for stopping threads after any error or interruption
         timeout = 10  # request timeout in seconds
         user_agents = [
@@ -419,14 +425,17 @@ if __name__ == "__main__":
             # for checking if user given email and pass for riskiq website and these creds are right or not
             verified = verify_creds()
             stop_threads = True  # to finish the work of prev thread
-            time.sleep(0.5)  # wait untill prev thread finishes
+            wait_till()  # wait till prev thread is finished
 
             # if user creds verified, then run main function
             if verified:
                 print(
-                    " " * (len(dispose_string) + 5), end="\r"
-                )  # to remove '[+] Credentials Verified' string
+                    " " * (len(dispose_string) + 5) + "\n", end="\r"
+                )  # to remove dispose string
                 main()
+
+            else:
+                print()  # to not remove dispose_string
 
         # session close
         rq_session.close()
