@@ -374,7 +374,7 @@ if __name__ == "__main__":
                     )
 
                 else:
-                    raise ("Config File not exists")  # -> Config File not exists
+                    raise Exception("Config File not exists")  # -> Config File not exists
 
             except:
                 error(errorMsg=f"Invalid/Empty configuration file")
@@ -402,7 +402,7 @@ if __name__ == "__main__":
 
                     # checking if file exists?
                     if not os.path.isfile(Input_filename):
-                        raise ("Input File not exists")  # ->  Input File not exists
+                        raise Exception("Input File not exists")  # ->  Input File not exists
 
                     # extracting urls from file
                     fileInput(Input_filename)
