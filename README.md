@@ -69,6 +69,10 @@ Note :-
     "pass":"yourPassw0rd"
 }
 ```
+* **After saving** your credentials in proper `config file`, You can use this tool with only `--verify` flag to check that **creds are valid**.
+```bash
+python3 riskiq_subfinder.py --verify
+```
 
 ## Few Examples
 > **Simple Input**
@@ -90,7 +94,11 @@ echo example.com | python3 riskiq_subfinder.py -
 ![2.png](https://github.com/MAAYTHM/riskiqsub/raw/main/images/2.png)
 
 ## Last Note
-All issues / updates suggestion are welcomed.
+* Ignore any error like :
+```diff
+- safeurl 0.0.7 requires requests==2.7.0, but you have requests 2.28.1 which is incompatible.
+```
+* All issues / updates suggestion are welcomed.
 
 ## Disclaimer
 The developer assumes no liability and is not responsible for any misuse or damage caused by this program. Please use responsibly.
