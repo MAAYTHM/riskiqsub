@@ -201,10 +201,15 @@ def pipeInput():
     """
     Extracting domains from pipe
     """
+    global domains
 
     for domain in sys.stdin:
         domain = domain.splitlines()[0]
-        domains.extend([domain])
+        if type(domain) != list:
+            domain = [domain]
+
+        # verify domain names
+        domains.extend(domain)
 
 
 def fileInput(name):
@@ -215,7 +220,22 @@ def fileInput(name):
 
     with open(name, "r") as f:
         domains = f.read().splitlines()
+
+    # verify domain names
     domains = list(set(domains))
+
+
+def verify_domains():
+    """
+    Verify domain with regex pattern
+    """
+    global domains
+
+    for domain in domains:
+        if not re.findall(".*\.[a-z]+$", domain):
+            error(
+                errorMsg="Invalid Domain Name: " + colored(" " + domain + " ", "blue")
+            )
 
 
 def verify_creds():
@@ -439,12 +459,13 @@ if __name__ == "__main__":
 
             # if none of the above condition run, then it means user is giving input simply like (example.py example)
             else:
-                for argument in arguments:
-                    if re.findall(".*\.[a-z]+$", argument):
-                        domains.append(argument)
+                domains.extend(arguments)
 
             if not silent:
                 print_banner()
+
+            # verifying domain names with regex patterns
+            verify_domains()
 
             # for checking if user given email and pass for riskiq website and these creds are right or not
             verified = verify_creds()
