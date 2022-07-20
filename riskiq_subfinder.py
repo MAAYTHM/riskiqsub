@@ -110,9 +110,10 @@ Flags :-
     * -h  --help      Print this help message.
     * -f  --file      Take input from file (.txt).
     * -t  --timeout   Timeout for requests (in seconds) (default: 10 seconds).
-    * --conf          Path to file which contains credentials for 'https://community.riskiq.com/' (.json) (default - './riskiq_subfinder.json').
     * -v  --verbose   Verbose mode for detailed error messages.
     * -q  --quiet     Silent mode (Only print subdomains/error messages).
+    * --conf          Path to file which contains credentials for 'https://community.riskiq.com/' (.json) (default - './riskiq_subfinder.json').
+    * --verify        Verify the credentials for 'https://securitytrails.com/'
 
 Examples :-
     * python3 {fileName} -h
@@ -315,6 +316,7 @@ if __name__ == "__main__":
         dispose_string = ""  # disposable variable just to use to transfer one value to another function
         verbose = False
         silent = False  # for suppressing banner print
+        only_verify = False  # only run 'verify_creds' function if it is True
         conf_file = "riskiq_subfinder.json"
         rq_session = Session()
         domains = []
@@ -374,7 +376,9 @@ if __name__ == "__main__":
                     )
 
                 else:
-                    raise Exception("Config File not exists")  # -> Config File not exists
+                    raise Exception(
+                        "Config File not exists"
+                    )  # -> Config File not exists
 
             except:
                 error(errorMsg=f"Invalid/Empty configuration file")
@@ -382,6 +386,10 @@ if __name__ == "__main__":
             # if verbose mode is enabled by user,
             if "-v" in arguments:
                 verbose = True
+
+            # if user specified "--verify" flag
+            if "--verify" in arguments:
+                only_verify = True
 
             # if user given timeout as '-t'
             if "-t" in arguments or "--timeout" in arguments:
@@ -402,7 +410,9 @@ if __name__ == "__main__":
 
                     # checking if file exists?
                     if not os.path.isfile(Input_filename):
-                        raise Exception("Input File not exists")  # ->  Input File not exists
+                        raise Exception(
+                            "Input File not exists"
+                        )  # ->  Input File not exists
 
                     # extracting urls from file
                     fileInput(Input_filename)
@@ -429,7 +439,7 @@ if __name__ == "__main__":
             wait_till()  # wait till prev thread is finished
 
             # if user creds verified, then run main function
-            if verified:
+            if verified and not only_verify:
                 print(
                     " " * (len(dispose_string) + 5) + "\n", end="\r"
                 )  # to remove dispose string
