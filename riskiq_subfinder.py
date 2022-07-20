@@ -236,7 +236,9 @@ def verify_creds():
         u_pass = json.load(open(conf_file, "r"))["pass"]
         data = {"username": u_email, "password": u_pass, "twoFactorAnswer": None}
         login_url = "https://community.riskiq.com/api/account/login"
-        dispose_string = "[+] Credentials Verified"
+        dispose_string = colored(
+            "[+] Credentials Verified", "green", attrs=["reverse", "bold"]
+        )
 
         # response from riskiq server for login
         resp = rq_session.post(
@@ -248,7 +250,9 @@ def verify_creds():
 
         # if credentials are wrong
         if not resp.status_code == 200 or not resp.json()["success"]:
-            dispose_string = "[-] Credentials not valid"
+            dispose_string = colored(
+                "[-] Credentials not valid", "red", attrs=["reverse", "bold"]
+            )
             return False
 
         return True
