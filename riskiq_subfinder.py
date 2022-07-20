@@ -142,6 +142,7 @@ def print_banner():
     """
     Print tool Banner
     """
+    global banner_printed
 
     banner = """
 d8888b. d888888b .d8888. db   dD d888888b  .d88b.  .d8888. db    db d8888b. 
@@ -170,20 +171,27 @@ d8888b. d888888b .d8888. db   dD d888888b  .d88b.  .d8888. db    db d8888b.
         colored(footer, color=colors[color]),
     )
 
+    # setting 'banner_printed' to True, means now there is no need to print banner again
+    banner_printed = True
+
 
 def error(errorMsg=""):
     """
     Print error messages.
     """
-    global verbose, stop_threads
+    global verbose, stop_threads, banner_printed
 
+    # if tool banner not printed still, print it
+    if not banner_printed:
+        print_banner()
+
+    print()
     # if verbose mode is enabled then print whole stack trace
     if verbose:
         print(traceback.format_exc())
 
     elif errorMsg and not str(errorMsg).isspace():
-        print()
-        print(colored(f"[-] Error, {errorMsg} !!!", "red"))
+        print(colored(f"[-] Error, {errorMsg} !!!", "red", attrs=["reverse", "bold"]))
 
     stop_threads = True
     sys.exit(1)
@@ -318,6 +326,7 @@ if __name__ == "__main__":
         GithubUrl = "https://github.com/MAAYTHM/"
         fileName = sys.argv[0].split("/")[-1].split("\\")[-1]
         dispose_string = ""  # disposable variable just to use to transfer one value to another function
+        banner_printed = False  # true if tool banner already printed
         verbose = False
         silent = False  # for suppressing banner print
         only_verify = False  # only run 'verify_creds' function if it is True
