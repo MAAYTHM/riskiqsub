@@ -229,10 +229,10 @@ def verify_domains():
     """
     Verify domain with regex pattern
     """
-    global domains
+    global domains, stadalone_flags
 
     for domain in domains:
-        if not re.findall(".*\.[a-z]+$", domain):
+        if not re.findall(".*\.[a-z]+$", domain) and domain not in stadalone_flags:
             error(
                 errorMsg="Invalid Domain Name: " + colored(" " + domain + " ", "blue")
             )
@@ -345,6 +345,12 @@ if __name__ == "__main__":
         Author = "MAAYTHM"
         GithubUrl = "https://github.com/MAAYTHM/"
         fileName = sys.argv[0].split("/")[-1].split("\\")[-1]
+        stadalone_flags = [
+            "-h",
+            "--help",
+            "?",
+            "--verify",
+        ]  # flags to remove from checking in 'verify_domains' function
         dispose_string = ""  # disposable variable just to use to transfer one value to another function
         banner_printed = False  # true if tool banner already printed
         verbose = False
