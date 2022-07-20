@@ -6,6 +6,7 @@ Actually I found [RiskIQ](https://community.riskiq.com) a fair source of getting
 
 ## Requirement?
 * python 3.x
+* [RiskIQ](https://community.riskiq.com) Credentials `email`&`password`.
 
 ## Installation
 ```bash
@@ -15,10 +16,12 @@ cd riskiqsub
 * EITHER
 ```bash
 pip3 install -r requirements.txt
+python3 riskiq_subfinder.py -h
 ```
 * OR
 ```bash
 pip install -r requirements.txt
+python riskiq_subfinder.py -h
 ```
 
 ## Help Banner
@@ -55,14 +58,34 @@ Note :-
     * If stacktrace is not shown while using '-v', then it means the error is explained only with the single line printed with '[-] Error'.
 ```
 
+## Saving Credentials
+* For using this tool, **Valid credentials** are needed which you can get by creating an account on [riskiq](https://community.riskiq.com/login).
+* Then enter your credentials in `riskiq_subfinder.json` or create your own `custom_name.json`.
+* The config JSON file should follow this format :
+```python
+{
+    "email":"youremail@yahoo.com",
+    "pass":"yourPassw0rd"
+}
+```
+
 ## Few Examples
 > **Simple Input**
+```bash
+python3 riskiq_subfinder.py example.com
+```
 ![1.png](https://github.com/MAAYTHM/riskiqsub/raw/main/images/1.png)
 
 > **File Input**
+```bash
+python3 riskiq_subfinder.py -f target.txt
+```
 ![3.png](https://github.com/MAAYTHM/riskiqsub/raw/main/images/3.png)
 
 > **Pipe Input**
+```bash
+echo example.com | python3 riskiq_subfinder.py -
+```
 ![2.png](https://github.com/MAAYTHM/riskiqsub/raw/main/images/2.png)
 
 ## Last Note
