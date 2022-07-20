@@ -43,9 +43,10 @@ Flags :-
     * -h  --help      Print this help message.
     * -f  --file      Take input from file (.txt).
     * -t  --timeout   Timeout for requests (in seconds) (default: 10 seconds).
-    * --conf          Path to file which contains credentials for 'https://community.riskiq.com/' (.json) (default - './riskiq_subfinder.json').
     * -v  --verbose   Verbose mode for detailed error messages.
     * -q  --quiet     Silent mode (Only print subdomains/error messages).
+    * --conf          Path to file which contains credentials for 'https://community.riskiq.com/' (.json) (default - './riskiq_subfinder.json').
+    * --verify        Verify the credentials for 'https://securitytrails.com/'
 
 Examples :-
     * python3 riskiq_subfinder.py -h
