@@ -1,3 +1,12 @@
+## ⚠️ Deprecation Notice
+
+As of May 2025, the [RiskIQ Community site](https://community.riskiq.com) has been discontinued and replaced by Microsoft Defender Threat Intelligence. Since the original source for subdomain data is no longer available, this tool is now deprecated and no longer functional.
+
+**Note:**  
+RiskIQ's PassiveTotal Community product has been retired, and there is no longer public access to its subdomain enumeration features. Please consider alternative sources or tools for subdomain discovery.
+
+---
+
 ## Whats use of this tool?
 To get subdomains from 'https://community.riskiq.com'. As there is no api endpoint, it uses valid credentials to login and then get subdomains.
 
@@ -46,7 +55,7 @@ Flags :-
     * -v  --verbose   Verbose mode for detailed error messages.
     * -q  --quiet     Silent mode (Only print subdomains/error messages).
     * --conf          Path to file which contains credentials for 'https://community.riskiq.com/' (.json) (default - './riskiq_subfinder.json').
-    * --verify        Verify the credentials for 'https://securitytrails.com/'
+    * --verify        Verify the credentials for 'https://community.riskiq.com/'
 
 Examples :-
     * python3 riskiq_subfinder.py -h
