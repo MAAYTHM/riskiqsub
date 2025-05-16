@@ -113,7 +113,7 @@ Flags :-
     * -v  --verbose   Verbose mode for detailed error messages.
     * -q  --quiet     Silent mode (Only print subdomains/error messages).
     * --conf          Path to file which contains credentials for 'https://community.riskiq.com/' (.json) (default - './riskiq_subfinder.json').
-    * --verify        Verify the credentials for 'https://securitytrails.com/'
+    * --verify        Verify the credentials for 'https://community.riskiq.com/'
 
 Examples :-
     * python3 {fileName} -h
